@@ -1,0 +1,122 @@
+[gd_scene load_steps=21 format=3 uid="uid://dvuubm3gsg4f2"]
+
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_4hvi2"]
+[ext_resource type="Texture2D" uid="uid://ccehxehw7sh45" path="res://assets/sprites/player_idle_0.png" id="1_k2lfi"]
+[ext_resource type="Texture2D" uid="uid://bq5q6f6kfdbav" path="res://assets/sprites/player_idle_1.png" id="2_u5w1s"]
+[ext_resource type="Texture2D" uid="uid://cur1tuv1qeaue" path="res://assets/sprites/player_idle_2.png" id="3_r1ar0"]
+[ext_resource type="Texture2D" uid="uid://cpjye6v8bujhx" path="res://assets/sprites/player_idle_3.png" id="4_xx37o"]
+[ext_resource type="Texture2D" uid="uid://cetuqbo65q7n6" path="res://assets/sprites/player_melee1_0.png" id="6_388ha"]
+[ext_resource type="Texture2D" uid="uid://3vj5too0vhw7" path="res://assets/sprites/player_melee1_1.png" id="6_yjbmc"]
+[ext_resource type="Texture2D" uid="uid://txt0d7f8hbla" path="res://assets/sprites/player_melee1_2.png" id="7_g02ud"]
+[ext_resource type="Texture2D" uid="uid://ddf0rf72i40nh" path="res://assets/sprites/player_melee1_3.png" id="8_ajx8t"]
+[ext_resource type="Texture2D" uid="uid://dn8erl7susnud" path="res://assets/sprites/player_melee2_0.png" id="9_gcy3k"]
+[ext_resource type="Texture2D" uid="uid://bq8j2d8gb0l5x" path="res://assets/sprites/player_melee2_1.png" id="10_ur1cr"]
+[ext_resource type="Texture2D" uid="uid://dahl47ibwln73" path="res://assets/sprites/player_melee2_2.png" id="11_fgmmi"]
+[ext_resource type="Texture2D" uid="uid://bajbfgisaygwn" path="res://assets/sprites/player_melee2_3.png" id="12_jnxwn"]
+[ext_resource type="Texture2D" uid="uid://j1yfeg62mn1q" path="res://assets/sprites/player_melee3_0.png" id="14_542cf"]
+[ext_resource type="Texture2D" uid="uid://dfowij6cr3i4n" path="res://assets/sprites/player_melee3_1.png" id="15_auu70"]
+[ext_resource type="Texture2D" uid="uid://cmfi17p8k5oay" path="res://assets/sprites/player_melee3_2.png" id="16_spp0n"]
+[ext_resource type="Texture2D" uid="uid://djea1if5y4aom" path="res://assets/sprites/player_melee3_3.png" id="17_pw3si"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_4u42a"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_k2lfi")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_u5w1s")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_r1ar0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_xx37o")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_388ha")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_yjbmc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_g02ud")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_ajx8t")
+}],
+"loop": false,
+"name": &"melee1",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_gcy3k")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_ur1cr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_fgmmi")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_jnxwn")
+}],
+"loop": false,
+"name": &"melee2",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("14_542cf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_auu70")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_spp0n")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_pw3si")
+}],
+"loop": false,
+"name": &"melee3",
+"speed": 8.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_yofo3"]
+radius = 8.0
+height = 48.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dbqul"]
+size = Vector2(55, 31)
+
+[node name="player" type="CharacterBody2D"]
+collision_layer = 2
+script = ExtResource("1_4hvi2")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -31)
+sprite_frames = SubResource("SpriteFrames_4u42a")
+animation = &"melee1"
+autoplay = "idle"
+frame = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(1, -24)
+shape = SubResource("CapsuleShape2D_yofo3")
+
+[node name="hitbox" type="Area2D" parent="."]
+position = Vector2(38.75, -22)
+
+[node name="hitbox_collider" type="CollisionShape2D" parent="hitbox"]
+position = Vector2(0.75, 0.5)
+shape = SubResource("RectangleShape2D_dbqul")
+disabled = true
+
+[connection signal="animation_finished" from="AnimatedSprite2D" to="." method="_on_animated_sprite_2d_animation_finished"]

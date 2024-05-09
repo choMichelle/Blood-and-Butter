@@ -1,0 +1,56 @@
+[gd_scene load_steps=9 format=3 uid="uid://c0xy1vbvjalxa"]
+
+[ext_resource type="Texture2D" uid="uid://bb1lp6bals00p" path="res://assets/sprites/pickup_meat_1.png" id="1_ajyvp"]
+[ext_resource type="Script" path="res://scripts/edible_meat.gd" id="1_lysqn"]
+[ext_resource type="Texture2D" uid="uid://cho08qrl1xxt3" path="res://assets/sprites/pickup_meat_2.png" id="2_3rjv7"]
+[ext_resource type="Texture2D" uid="uid://dx83ow4sy571k" path="res://assets/sprites/pickup_meat_3.png" id="3_7kybf"]
+[ext_resource type="PackedScene" uid="uid://3smqxuer3rn8" path="res://scenes/enemy_hurtbox.tscn" id="5_nvr4v"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_rsj3l"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_ajyvp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_3rjv7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_7kybf")
+}],
+"loop": true,
+"name": &"default",
+"speed": 6.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_6ua8c"]
+radius = 6.0
+height = 28.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_sugxt"]
+radius = 6.0
+height = 28.0
+
+[node name="edible_meat" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 3
+script = ExtResource("1_lysqn")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_rsj3l")
+autoplay = "default"
+frame_progress = 0.888525
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 10)
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_6ua8c")
+
+[node name="enemy_hurtbox" parent="." instance=ExtResource("5_nvr4v")]
+
+[node name="hurtbox_collider" type="CollisionShape2D" parent="enemy_hurtbox"]
+position = Vector2(0, 10)
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_sugxt")
+
+[connection signal="body_entered" from="enemy_hurtbox" to="." method="_on_enemy_hurtbox_body_entered"]
