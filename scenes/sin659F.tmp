@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://chlp4ste6twgb" path="res://assets/sprites/singer_idle_1.png" id="3_4ac26"]
 [ext_resource type="Texture2D" uid="uid://c82btfcamy5yn" path="res://assets/sprites/singer_idle_2.png" id="4_53rai"]
 [ext_resource type="Texture2D" uid="uid://omn1asnjsge6" path="res://assets/sprites/singer_idle_3.png" id="5_bggg8"]
-[ext_resource type="PackedScene" uid="uid://3smqxuer3rn8" path="res://scenes/hurtbox.tscn" id="6_hg3ur"]
+[ext_resource type="PackedScene" uid="uid://3smqxuer3rn8" path="res://scenes/enemy_hurtbox.tscn" id="5_nvr4v"]
 [ext_resource type="PackedScene" uid="uid://dmpuu0hjtirl7" path="res://scenes/enemy_detection_range.tscn" id="7_m0if8"]
 [ext_resource type="PackedScene" uid="uid://k037nmsgkuyc" path="res://scenes/obstacle_detection.tscn" id="8_qlbwv"]
 
@@ -56,7 +56,7 @@ frame_progress = 0.823498
 position = Vector2(0, -24)
 shape = SubResource("CapsuleShape2D_6ua8c")
 
-[node name="enemy_hurtbox" parent="." instance=ExtResource("6_hg3ur")]
+[node name="enemy_hurtbox" parent="." instance=ExtResource("5_nvr4v")]
 
 [node name="hurtbox_collider" type="CollisionShape2D" parent="enemy_hurtbox"]
 position = Vector2(0, -24)
@@ -69,4 +69,3 @@ position = Vector2(0, -33)
 shape = SubResource("RectangleShape2D_ynaak")
 
 [node name="obstacle_detection" parent="." instance=ExtResource("8_qlbwv")]
-position = Vector2(0, -20)

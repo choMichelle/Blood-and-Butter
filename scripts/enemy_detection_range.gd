@@ -1,7 +1,7 @@
 # add to enemy scenes (+collisionShape), used in controlling chase state
 extends Area2D
 
-@onready var chase_timer = $Timer
+@onready var chase_timer = $Timer # limits how long player is chased for
 var is_chasing: bool = false
 
 # when player enters detection range

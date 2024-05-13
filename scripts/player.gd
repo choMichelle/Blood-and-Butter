@@ -1,3 +1,4 @@
+# player stats and controls
 extends CharacterBody2D
 
 const SPEED = 200.0

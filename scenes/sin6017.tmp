@@ -69,4 +69,3 @@ position = Vector2(0, -33)
 shape = SubResource("RectangleShape2D_ynaak")
 
 [node name="obstacle_detection" parent="." instance=ExtResource("8_qlbwv")]
-position = Vector2(0, -20)
