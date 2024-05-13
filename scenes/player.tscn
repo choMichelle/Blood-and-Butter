@@ -137,7 +137,7 @@ emitting = false
 amount = 100
 gravity = Vector2(0, 0)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="player_body" type="CollisionShape2D" parent="."]
 position = Vector2(1, -24)
 shape = SubResource("CapsuleShape2D_yofo3")
 

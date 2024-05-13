@@ -1,4 +1,4 @@
-# add to enemy scenes (+collisionShape), used for hit detection
+# add to enemy scenes (+collisionShape), used for hit detection (getting damaged)
 extends Area2D
 
 @onready var timer = $Timer

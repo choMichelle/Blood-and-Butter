@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://c0xy1vbvjalxa"]
+[gd_scene load_steps=12 format=3 uid="uid://c0xy1vbvjalxa"]
 
 [ext_resource type="Script" path="res://scripts/enemy_singer.gd" id="1_lysqn"]
 [ext_resource type="Texture2D" uid="uid://du4sae77a1g2t" path="res://assets/sprites/singer_idle_0.png" id="2_bmveg"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://c82btfcamy5yn" path="res://assets/sprites/singer_idle_2.png" id="4_53rai"]
 [ext_resource type="Texture2D" uid="uid://omn1asnjsge6" path="res://assets/sprites/singer_idle_3.png" id="5_bggg8"]
 [ext_resource type="PackedScene" uid="uid://3smqxuer3rn8" path="res://scenes/enemy_hurtbox.tscn" id="5_nvr4v"]
+[ext_resource type="PackedScene" uid="uid://dmpuu0hjtirl7" path="res://scenes/enemy_detection_range.tscn" id="7_m0if8"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_rsj3l"]
 animations = [{
@@ -35,6 +36,9 @@ height = 48.0
 radius = 6.0
 height = 48.0
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ynaak"]
+size = Vector2(131, 64)
+
 [node name="singer" type="CharacterBody2D"]
 collision_layer = 4
 collision_mask = 3
@@ -56,3 +60,9 @@ shape = SubResource("CapsuleShape2D_6ua8c")
 [node name="hurtbox_collider" type="CollisionShape2D" parent="enemy_hurtbox"]
 position = Vector2(0, -24)
 shape = SubResource("CapsuleShape2D_sugxt")
+
+[node name="enemy_detection_range" parent="." instance=ExtResource("7_m0if8")]
+
+[node name="detection_collider" type="CollisionShape2D" parent="enemy_detection_range"]
+position = Vector2(0, -33)
+shape = SubResource("RectangleShape2D_ynaak")
