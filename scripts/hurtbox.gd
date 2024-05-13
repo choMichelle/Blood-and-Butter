@@ -1,14 +1,15 @@
 # add to character scenes (+collisionShape), used for hit detection (being damaged)
 extends Area2D
 
-@onready var timer = $Timer
-var is_hit: bool = false
+@onready var timer = $Timer # i-frame timer
 var is_invincible: bool = false
+
+signal damage_taken
 
 func _on_area_entered(area):
 	if area.name == "hitboxes" and !is_invincible:
-		timer.start(1.25) #i-frame timer
-		is_hit = true
+		timer.start(1.25)
+		damage_taken.emit()
 		is_invincible = true
 
 func _on_timer_timeout():

@@ -5,8 +5,6 @@
 [node name="obstacle_detection" type="Node2D"]
 script = ExtResource("1_ivpt8")
 
-[node name="ray_left" type="RayCast2D" parent="."]
-target_position = Vector2(-100, 0)
-collide_with_bodies = false
-
-[connection signal="obstacle_detected" from="." to="." method="_on_obstacle_detected"]
+[node name="ray" type="RayCast2D" parent="."]
+enabled = false
+target_position = Vector2(-35, 0)

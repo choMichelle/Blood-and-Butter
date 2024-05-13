@@ -42,7 +42,6 @@ size = Vector2(131, 64)
 
 [node name="singer" type="CharacterBody2D"]
 collision_layer = 4
-collision_mask = 3
 script = ExtResource("1_lysqn")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
@@ -52,21 +51,24 @@ animation = &"idle"
 autoplay = "idle"
 frame_progress = 0.823498
 
+[node name="obstacle_detection" parent="AnimatedSprite2D" instance=ExtResource("8_qlbwv")]
+position = Vector2(0, 20)
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -24)
 shape = SubResource("CapsuleShape2D_6ua8c")
 
 [node name="enemy_hurtbox" parent="." instance=ExtResource("6_hg3ur")]
+collision_layer = 4
+collision_mask = 2
 
 [node name="hurtbox_collider" type="CollisionShape2D" parent="enemy_hurtbox"]
 position = Vector2(0, -24)
 shape = SubResource("CapsuleShape2D_sugxt")
 
 [node name="enemy_detection_range" parent="." instance=ExtResource("7_m0if8")]
+collision_layer = 4
 
 [node name="detection_collider" type="CollisionShape2D" parent="enemy_detection_range"]
 position = Vector2(0, -33)
 shape = SubResource("RectangleShape2D_ynaak")
-
-[node name="obstacle_detection" parent="." instance=ExtResource("8_qlbwv")]
-position = Vector2(0, -20)

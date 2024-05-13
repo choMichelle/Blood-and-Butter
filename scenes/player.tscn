@@ -115,6 +115,8 @@ autoplay = "idle"
 
 [node name="hitboxes" type="Area2D" parent="AnimatedSprite2D"]
 position = Vector2(38.75, 9)
+collision_layer = 2
+collision_mask = 4
 
 [node name="hitbox_collider1" type="CollisionShape2D" parent="AnimatedSprite2D/hitboxes"]
 position = Vector2(0.75, 0.5)

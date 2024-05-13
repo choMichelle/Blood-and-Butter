@@ -102,7 +102,7 @@ func play_animations():
 	else:
 		animated_sprite.play("idle")
 
-# handles animations to come after a melee attack (ie. combo attacks)
+# handle queued melee attack animations
 func _on_animated_sprite_2d_animation_finished():
 	if is_attacking1:
 		is_attacking1 = false
