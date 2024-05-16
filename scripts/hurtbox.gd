@@ -8,7 +8,7 @@ signal damage_taken
 
 func _on_area_entered(area):
 	if area.name == "hitboxes" and !is_invincible:
-		timer.start(1.25)
+		timer.start(1.05)
 		damage_taken.emit()
 		is_invincible = true
 

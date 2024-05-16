@@ -11,6 +11,12 @@ var MAX_HEALTH = 5
 var health = 5
 var SPEED = 150.0
 var JUMP_VELOCITY = -250.0
+var KNOCKBACK_POWER = 150.0 # applied to self
+
+var is_hit: bool = false
+var melee_range = 60
+var is_attacking1: bool = false
+var is_attacking2: bool = false
 
 # enemy nodes and colliders
 @onready var hurtbox = $enemy_hurtbox
@@ -18,8 +24,16 @@ var JUMP_VELOCITY = -250.0
 @onready var detection_range = $enemy_detection_range
 @onready var obs_detector = $AnimatedSprite2D/obstacle_detection
 
-# player nodes
+# attack nodes
+@onready var melee1_hitbox = $AnimatedSprite2D/hitboxes/hitbox_collider1
+@onready var melee2_hitbox = $AnimatedSprite2D/hitboxes/hitbox_collider2
+
+# player targetting nodes and variables
 @onready var target = $"../../player"
+var target_pos
+var target_dir
+
+var direction = 0 # direction to player, used to chase
 
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 
@@ -30,32 +44,32 @@ func _init(_MAX_HEALTH = 5, _health = 5, _SPEED = 150.0):
 	SPEED = _SPEED
 
 func _ready():
+	enemy_sprite.animation_finished.connect(_on_animation_finished)
 	hurtbox.damage_taken.connect(_on_damage_taken)
 	obs_detector.obstacle_detected.connect(_on_obstacle_detected)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	
 	# change to DEAD state
 	if health == 0:
 		curr_state = states.DEAD
-	print(health)
+	print(is_attacking2)
 
 func _physics_process(delta):
 	# add gravity
 	if not is_on_floor():
 		velocity.y += gravity * delta
 	
+	find_player_direction()
+	
 	# enemy action state control
 	match curr_state:
 		states.NEUTRAL:
 			velocity.x = 0
-			if hurtbox.is_hit:
-				detection_range.is_chasing = true
-				curr_state = states.CHASE
 		states.CHASE:
 			obs_detector.ray.enabled = true
-			follow_player()
+			if !is_hit:
+				follow_player()
 			
 			# stop chasing
 			if detection_range.is_chasing == false:
@@ -64,37 +78,76 @@ func _physics_process(delta):
 		states.ATTACK:
 			pass #TODO - code for attack state
 		states.DEAD:
-			pass #TODO - add code for when enemy is dead and edible
+			velocity.x = 0
+			#TODO - add code for when enemy is dead and edible
+	
+	play_animations()
 	
 	# flip sprite
-	if velocity.x > 0:
-		enemy_sprite.scale.x = -1
-	if velocity.x < 0:
-		enemy_sprite.scale.x = 1
+	if !is_hit:
+		if velocity.x > 0:
+			enemy_sprite.scale.x = -1
+		if velocity.x < 0:
+			enemy_sprite.scale.x = 1
 	
 	move_and_slide()
 
 # handle hurtbox being hit
 func _on_damage_taken():
-	if health > 0:
+	# take damage if not dead
+	if curr_state != states.DEAD:
 		health -= 1
+		velocity.x += (direction * -1) * KNOCKBACK_POWER
+		is_hit = true
+		
+	# change state to aggro
+	if curr_state == states.NEUTRAL:
+		detection_range.is_chasing = true
+		curr_state = states.CHASE
 
 # after detecting obstacle, jump over it
 func _on_obstacle_detected():
 	velocity.y = JUMP_VELOCITY
 
-func follow_player():
-	# find player
-	var target_pos = target.position
-	var target_dir = position.x - target_pos.x
-	var direction = 0
+func find_player_direction():
+	target_pos = target.position
+	target_dir = position.x - target_pos.x
 	if target_dir > 0:
 		direction = -1
 	elif target_dir < 0:
 		direction = 1
-		
+
+func follow_player():
 	# move to player
-	if position.distance_to(target_pos) > 35:
+	if position.distance_to(target_pos) > melee_range:
 		velocity.x = direction * SPEED
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
+	if position.distance_to(target_pos) < melee_range:
+		is_attacking1 = true
+
+func play_animations():
+	if is_attacking1 and !is_attacking2 and !is_hit:
+		enemy_sprite.play("melee1")
+		melee1_hitbox.disabled = false
+	elif is_attacking2 and !is_hit:
+		enemy_sprite.play("melee2")
+		melee2_hitbox.disabled = false
+	elif is_hit:
+		enemy_sprite.play("hurt")
+	else:
+		enemy_sprite.play("idle")
+
+func _on_animation_finished():
+	if is_attacking1 and !is_attacking2:
+		is_attacking1 = false
+		melee1_hitbox.disabled = true
+		if position.distance_to(target_pos) < melee_range:
+			is_attacking2 = true
+	elif is_attacking2:
+		is_attacking2 = false
+		melee2_hitbox.disabled = true
+	
+	if is_hit:
+		is_hit = false
+		

@@ -1,14 +1,21 @@
-[gd_scene load_steps=23 format=3 uid="uid://dvuubm3gsg4f2"]
+[gd_scene load_steps=30 format=3 uid="uid://dvuubm3gsg4f2"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_4hvi2"]
 [ext_resource type="Texture2D" uid="uid://ccehxehw7sh45" path="res://assets/sprites/player_idle_0.png" id="1_k2lfi"]
+[ext_resource type="Texture2D" uid="uid://cw0cuf2iwobn1" path="res://assets/sprites/player_eat_0.png" id="2_iq3oo"]
 [ext_resource type="Texture2D" uid="uid://bq5q6f6kfdbav" path="res://assets/sprites/player_idle_1.png" id="2_u5w1s"]
+[ext_resource type="Texture2D" uid="uid://cbfks1ru0d5ie" path="res://assets/sprites/player_eat_1.png" id="3_qxmcn"]
 [ext_resource type="Texture2D" uid="uid://cur1tuv1qeaue" path="res://assets/sprites/player_idle_2.png" id="3_r1ar0"]
+[ext_resource type="Texture2D" uid="uid://df35wfjabhssh" path="res://assets/sprites/player_eat_2.png" id="4_uue3j"]
 [ext_resource type="Texture2D" uid="uid://cpjye6v8bujhx" path="res://assets/sprites/player_idle_3.png" id="4_xx37o"]
+[ext_resource type="Texture2D" uid="uid://bq4sfccxx6vsp" path="res://assets/sprites/player_eat_3.png" id="5_543lx"]
+[ext_resource type="Texture2D" uid="uid://4b3jcs5x37i6" path="res://assets/sprites/player_eat_4.png" id="6_0islf"]
 [ext_resource type="Texture2D" uid="uid://cetuqbo65q7n6" path="res://assets/sprites/player_melee1_0.png" id="6_388ha"]
 [ext_resource type="Texture2D" uid="uid://3vj5too0vhw7" path="res://assets/sprites/player_melee1_1.png" id="6_yjbmc"]
 [ext_resource type="Texture2D" uid="uid://txt0d7f8hbla" path="res://assets/sprites/player_melee1_2.png" id="7_g02ud"]
+[ext_resource type="Texture2D" uid="uid://c4xggqwqh1p52" path="res://assets/sprites/player_eat_5.png" id="7_uaggx"]
 [ext_resource type="Texture2D" uid="uid://ddf0rf72i40nh" path="res://assets/sprites/player_melee1_3.png" id="8_ajx8t"]
+[ext_resource type="Texture2D" uid="uid://b5h5hcdapuxtk" path="res://assets/sprites/player_eat_6.png" id="8_qxggd"]
 [ext_resource type="Texture2D" uid="uid://dn8erl7susnud" path="res://assets/sprites/player_melee2_0.png" id="9_gcy3k"]
 [ext_resource type="Texture2D" uid="uid://bq8j2d8gb0l5x" path="res://assets/sprites/player_melee2_1.png" id="10_ur1cr"]
 [ext_resource type="Texture2D" uid="uid://dahl47ibwln73" path="res://assets/sprites/player_melee2_2.png" id="11_fgmmi"]
@@ -20,6 +27,38 @@
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_4u42a"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_iq3oo")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_qxmcn")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_uue3j")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_543lx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_0islf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_543lx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_uue3j")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_uaggx")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_qxggd")
+}],
+"loop": false,
+"name": &"eat",
+"speed": 8.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": ExtResource("1_k2lfi")
@@ -110,8 +149,10 @@ script = ExtResource("1_4hvi2")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -31)
 sprite_frames = SubResource("SpriteFrames_4u42a")
-animation = &"idle"
+animation = &"eat"
 autoplay = "idle"
+frame = 8
+frame_progress = 1.0
 
 [node name="hitboxes" type="Area2D" parent="AnimatedSprite2D"]
 position = Vector2(38.75, 9)
