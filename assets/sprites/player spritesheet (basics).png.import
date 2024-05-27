@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bxcp137uuifed"
-path="res://.godot/imported/singer_melee2_2.png-10597cd684058bce382316cd0e404ba5.ctex"
+uid="uid://crv70b52xmbma"
+path="res://.godot/imported/player spritesheet (basics).png-9901431352de53782c90ef0253783e01.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/singer_melee2_2.png"
-dest_files=["res://.godot/imported/singer_melee2_2.png-10597cd684058bce382316cd0e404ba5.ctex"]
+source_file="res://assets/sprites/player spritesheet (basics).png"
+dest_files=["res://.godot/imported/player spritesheet (basics).png-9901431352de53782c90ef0253783e01.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://du4sae77a1g2t"
-path="res://.godot/imported/singer_idle_0.png-89567bcd0a2d50c7e5e4f968a9a52825.ctex"
+uid="uid://bxqhj7f1ugpoy"
+path="res://.godot/imported/dash_particle.png-7174466f1cf10f5935ae6a042e594d1e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/singer_idle_0.png"
-dest_files=["res://.godot/imported/singer_idle_0.png-89567bcd0a2d50c7e5e4f968a9a52825.ctex"]
+source_file="res://assets/sprites/dash_particle.png"
+dest_files=["res://.godot/imported/dash_particle.png-7174466f1cf10f5935ae6a042e594d1e.ctex"]
 
 [params]
 

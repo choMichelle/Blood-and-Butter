@@ -25,7 +25,7 @@ var queued_attack: bool = false
 
 # dash nodes
 @onready var dash_timer = $dash_timer
-@onready var dash_particles = $AnimatedSprite2D/CPUParticles2D
+@onready var dash_particles = $AnimatedSprite2D/Particles2D
 
 # attack nodes
 @onready var melee1_hitbox = $AnimatedSprite2D/hitboxes/hitbox_collider1
@@ -69,14 +69,18 @@ func _physics_process(delta):
 	
 	# handle dash
 	if Input.is_action_just_pressed("dash") and can_dash:
+		animated_sprite.play("dash")
 		if animated_sprite.scale.x == -1:
 			velocity.x += DASH_VELOCITY * -1
 		else:
 			velocity.x += DASH_VELOCITY
+		dash_timer.start()
 		can_dash = false
 		is_dashing = true
 		dash_particles.emitting = true
-		dash_timer.start(0.32)
+	# reset dash
+	if !is_dashing and is_on_floor():
+		can_dash = true
 	
 	play_animations()
 	
@@ -85,22 +89,31 @@ func _physics_process(delta):
 		animated_sprite.scale.x = 1
 	elif direction < 0:
 		animated_sprite.scale.x = -1
+		
+	print(can_dash)
 
 	move_and_slide()
 
 # handles changing animations
 func play_animations():
-	if is_attacking1:
-		animated_sprite.play("melee1")
-		melee1_hitbox.disabled = false
-	elif is_attacking2:
-		animated_sprite.play("melee2")
-		melee2_hitbox.disabled = false
-	elif is_attacking_up:
-		animated_sprite.play("melee3")
-		melee_up_hitbox.disabled = false
-	else:
-		animated_sprite.play("idle")
+	if !is_dashing:
+		if is_attacking1:
+			animated_sprite.play("melee1")
+			melee1_hitbox.disabled = false
+		elif is_attacking2:
+			animated_sprite.play("melee2")
+			melee2_hitbox.disabled = false
+		elif is_attacking_up:
+			animated_sprite.play("melee3")
+			melee_up_hitbox.disabled = false
+		elif velocity.y > 0:
+			animated_sprite.play("fall")
+		elif velocity.y < 0:
+			animated_sprite.play("jump")
+		elif velocity.x != 0:
+			animated_sprite.play("walk")
+		else:
+			animated_sprite.play("idle")
 
 # handle queued melee attack animations
 func _on_animated_sprite_2d_animation_finished():
@@ -125,9 +138,7 @@ func _on_animated_sprite_2d_animation_finished():
 			is_attacking1 = true
 			queued_attack = false
 
-# reset dash after cooldown ends
+# turn off dash particles
 func _on_dash_timer_timeout():
 	is_dashing = false
 	dash_particles.emitting = false
-	if is_on_floor():
-		can_dash = true

@@ -53,7 +53,6 @@ func _process(delta):
 	# change to DEAD state
 	if health == 0:
 		curr_state = states.DEAD
-	print(is_attacking2)
 
 func _physics_process(delta):
 	# add gravity
