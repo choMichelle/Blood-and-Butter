@@ -1,4 +1,4 @@
-[gd_scene load_steps=48 format=3 uid="uid://c0xy1vbvjalxa"]
+[gd_scene load_steps=49 format=3 uid="uid://c0xy1vbvjalxa"]
 
 [ext_resource type="Script" path="res://scripts/enemy_singer.gd" id="1_lysqn"]
 [ext_resource type="Texture2D" uid="uid://cg0pjsnja0iuh" path="res://assets/sprites/singer spritesheet.png" id="2_37kds"]
@@ -321,9 +321,12 @@ size = Vector2(27, 41)
 radius = 6.0
 height = 48.0
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_sugxt"]
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_1b7ik"]
 radius = 6.0
 height = 48.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fwmxg"]
+size = Vector2(49, 13)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ynaak"]
 size = Vector2(131, 64)
@@ -335,10 +338,8 @@ script = ExtResource("1_lysqn")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -28)
 sprite_frames = SubResource("SpriteFrames_rsj3l")
-animation = &"walk"
+animation = &"edible"
 autoplay = "idle"
-frame = 5
-frame_progress = 1.0
 
 [node name="obstacle_detection" parent="AnimatedSprite2D" instance=ExtResource("8_qlbwv")]
 position = Vector2(0, 20)
@@ -360,13 +361,17 @@ position = Vector2(0, -24)
 shape = SubResource("CapsuleShape2D_6ua8c")
 
 [node name="enemy_hurtbox" parent="." instance=ExtResource("6_hg3ur")]
-visible = false
 collision_layer = 4
 collision_mask = 2
 
-[node name="hurtbox_collider" type="CollisionShape2D" parent="enemy_hurtbox"]
+[node name="hurtbox_collider" parent="enemy_hurtbox" index="0"]
 position = Vector2(0, -24)
-shape = SubResource("CapsuleShape2D_sugxt")
+shape = SubResource("CapsuleShape2D_1b7ik")
+
+[node name="edible_hurtbox_collider" type="CollisionShape2D" parent="enemy_hurtbox"]
+position = Vector2(-0.5, -6.5)
+shape = SubResource("RectangleShape2D_fwmxg")
+disabled = true
 
 [node name="enemy_detection_range" parent="." instance=ExtResource("7_m0if8")]
 visible = false
@@ -375,3 +380,7 @@ collision_layer = 4
 [node name="detection_collider" type="CollisionShape2D" parent="enemy_detection_range"]
 position = Vector2(0, -33)
 shape = SubResource("RectangleShape2D_ynaak")
+
+[connection signal="damage_taken" from="enemy_hurtbox" to="." method="_on_enemy_hurtbox_damage_taken"]
+
+[editable path="enemy_hurtbox"]

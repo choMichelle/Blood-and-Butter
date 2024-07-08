@@ -1,16 +1,32 @@
 # add to character scenes (+collisionShape), used for hit detection (being damaged)
 extends Area2D
 
+@onready var hurtbox = $hurtbox_collider
 @onready var timer = $Timer # i-frame timer
 var is_invincible: bool = false
 
-signal damage_taken
+# define custom signals
+signal damage_taken(knockback_direction)
+signal bite_taken
 
 func _on_area_entered(area):
 	if area.name == "hitboxes" and !is_invincible:
 		timer.start(1.05)
-		damage_taken.emit()
 		is_invincible = true
+		
+		# find direction the hit came from
+		var knock_direction = 0
+		var hit_direction = hurtbox.global_position.x - area.global_position.x
+		print(str(hurtbox.global_position.x) + "," + str(area.global_position.x) )
+		if hit_direction > 0:
+			knock_direction = 1
+		if hit_direction < 0:
+			knock_direction = -1
+		
+		damage_taken.emit(knock_direction)
+		
+	if area.name == "eat_hitbox":
+		bite_taken.emit()
 
 func _on_timer_timeout():
 	is_invincible = false

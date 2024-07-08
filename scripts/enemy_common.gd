@@ -3,7 +3,7 @@
 extends CharacterBody2D
 
 # enemy states
-enum states {NEUTRAL, CHASE, ATTACK, DEAD}
+enum states {NEUTRAL, CHASE, ATTACK, DYING, EDIBLE}
 var curr_state = states.NEUTRAL
 
 # enemy stats
@@ -29,7 +29,7 @@ var is_attacking2: bool = false
 @onready var melee2_hitbox = $AnimatedSprite2D/hitboxes/hitbox_collider2
 
 # player targetting nodes and variables
-@onready var target = $"../../player"
+@onready var target = %player
 var target_pos
 var target_dir
 
@@ -46,13 +46,16 @@ func _init(_MAX_HEALTH = 5, _health = 5, _SPEED = 150.0):
 func _ready():
 	enemy_sprite.animation_finished.connect(_on_animation_finished)
 	hurtbox.damage_taken.connect(_on_damage_taken)
+	hurtbox.bite_taken.connect(_on_bite_taken)
 	obs_detector.obstacle_detected.connect(_on_obstacle_detected)
+	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	# change to DEAD state
-	if health == 0:
-		curr_state = states.DEAD
+	if curr_state != states.EDIBLE and health == 0:
+		curr_state = states.DYING
+		enemy_sprite.play("death")
 
 func _physics_process(delta):
 	# add gravity
@@ -76,9 +79,10 @@ func _physics_process(delta):
 				curr_state = states.NEUTRAL
 		states.ATTACK:
 			pass #TODO - code for attack state
-		states.DEAD:
+		states.DYING:
 			velocity.x = 0
-			#TODO - add code for when enemy is dead and edible
+		states.EDIBLE:
+			velocity.x = 0
 	
 	play_animations()
 	
@@ -92,17 +96,28 @@ func _physics_process(delta):
 	move_and_slide()
 
 # handle hurtbox being hit
-func _on_damage_taken():
+# hit by attacks
+func _on_damage_taken(knockback_direction):
 	# take damage if not dead
-	if curr_state != states.DEAD:
+	if health > 0:
 		health -= 1
-		velocity.x += (direction * -1) * KNOCKBACK_POWER
+		velocity.x += knockback_direction * KNOCKBACK_POWER
 		is_hit = true
 		
 	# change state to aggro
 	if curr_state == states.NEUTRAL:
 		detection_range.is_chasing = true
 		curr_state = states.CHASE
+
+# hit by eat attack
+func _on_bite_taken():
+	if curr_state == states.EDIBLE:
+		target.recover_health(2)
+		queue_free()
+	else:
+		if health > 0:
+			health -= 2
+			is_hit = true
 
 # after detecting obstacle, jump over it
 func _on_obstacle_detected():
@@ -126,18 +141,29 @@ func follow_player():
 		is_attacking1 = true
 
 func play_animations():
-	if is_attacking1 and !is_attacking2 and !is_hit:
-		enemy_sprite.play("melee1")
+	if curr_state == states.DYING:
 		melee1_hitbox.disabled = false
-	elif is_attacking2 and !is_hit:
-		enemy_sprite.play("melee2")
 		melee2_hitbox.disabled = false
-	elif is_hit:
-		enemy_sprite.play("hurt")
-	else:
-		enemy_sprite.play("idle")
+		enemy_sprite.play("death")
+	if curr_state == states.EDIBLE:
+		enemy_sprite.play("edible")
+	
+	if curr_state != states.DYING and curr_state != states.EDIBLE:
+		if is_attacking1 and !is_attacking2 and !is_hit:
+			enemy_sprite.play("melee1")
+			melee1_hitbox.disabled = false
+		elif is_attacking2 and !is_hit:
+			enemy_sprite.play("melee2")
+			melee2_hitbox.disabled = false
+		elif is_hit:
+			enemy_sprite.play("hurt")
+		else:
+			enemy_sprite.play("idle")
 
 func _on_animation_finished():
+	if curr_state == states.DYING:
+		curr_state = states.EDIBLE
+
 	if is_attacking1 and !is_attacking2:
 		is_attacking1 = false
 		melee1_hitbox.disabled = true

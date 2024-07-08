@@ -5,6 +5,8 @@
 [node name="hurtbox" type="Area2D"]
 script = ExtResource("1_87nrb")
 
+[node name="hurtbox_collider" type="CollisionShape2D" parent="."]
+
 [node name="Timer" type="Timer" parent="."]
 one_shot = true
 
