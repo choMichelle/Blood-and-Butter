@@ -7,7 +7,7 @@ enum states {NEUTRAL, CHASE, ATTACK, DYING, EDIBLE}
 var curr_state = states.NEUTRAL
 
 # enemy stats
-var MAX_HEALTH = 5
+var max_health = 5
 var health = 5
 var SPEED = 150.0
 var JUMP_VELOCITY = -250.0
@@ -18,18 +18,26 @@ var melee_range = 60
 var is_attacking1: bool = false
 var is_attacking2: bool = false
 
+var can_interact_with: bool = false
+var is_alive: bool = true
+var can_be_eaten: bool = false
+
 # enemy nodes and colliders
-@onready var hurtbox = $enemy_hurtbox
 @onready var enemy_sprite = $AnimatedSprite2D
+@onready var hurtbox = $enemy_hurtbox
+@onready var hurtbox_collider = $enemy_hurtbox/hurtbox_collider
+@onready var edible_hurtbox_collider = $enemy_hurtbox/edible_hurtbox_collider
 @onready var detection_range = $enemy_detection_range
 @onready var obs_detector = $AnimatedSprite2D/obstacle_detection
+@onready var interactable = $interactable
 
 # attack nodes
 @onready var melee1_hitbox = $AnimatedSprite2D/hitboxes/hitbox_collider1
 @onready var melee2_hitbox = $AnimatedSprite2D/hitboxes/hitbox_collider2
 
 # player targetting nodes and variables
-@onready var target = %player
+#@onready var target = %player
+var target
 var target_pos
 var target_dir
 
@@ -38,8 +46,8 @@ var direction = 0 # direction to player, used to chase
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 # initialize enemy stats, to be changed for unique enemies
-func _init(_MAX_HEALTH = 5, _health = 5, _SPEED = 150.0):
-	MAX_HEALTH = _MAX_HEALTH
+func _init(_max_health = 5, _health = 5, _SPEED = 150.0):
+	max_health = _max_health
 	health = _health
 	SPEED = _SPEED
 
@@ -48,7 +56,7 @@ func _ready():
 	hurtbox.damage_taken.connect(_on_damage_taken)
 	hurtbox.bite_taken.connect(_on_bite_taken)
 	obs_detector.obstacle_detected.connect(_on_obstacle_detected)
-	
+	interactable.in_interact_range.connect(_on_in_interact_range)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -62,13 +70,12 @@ func _physics_process(delta):
 	if not is_on_floor():
 		velocity.y += gravity * delta
 	
-	find_player_direction()
-	
 	# enemy action state control
 	match curr_state:
 		states.NEUTRAL:
 			velocity.x = 0
 		states.CHASE:
+			find_player_direction()
 			obs_detector.ray.enabled = true
 			if !is_hit:
 				follow_player()
@@ -81,8 +88,12 @@ func _physics_process(delta):
 			pass #TODO - code for attack state
 		states.DYING:
 			velocity.x = 0
+			hurtbox_collider.disabled = true
+			melee1_hitbox.disabled = true
+			melee2_hitbox.disabled = true
 		states.EDIBLE:
 			velocity.x = 0
+			edible_hurtbox_collider.disabled = false
 	
 	play_animations()
 	
@@ -124,6 +135,13 @@ func _on_obstacle_detected():
 	velocity.y = JUMP_VELOCITY
 
 func find_player_direction():
+	var player_nodes = get_tree().get_nodes_in_group("player")
+	for node in player_nodes:
+		# Check if the player node is an instanced scene
+		if node.scene_file_path.is_empty():
+			print("player node '%s' is not an instanced scene, skipped" % node.name)
+			continue
+		target = node
 	target_pos = target.position
 	target_dir = position.x - target_pos.x
 	if target_dir > 0:
@@ -142,8 +160,6 @@ func follow_player():
 
 func play_animations():
 	if curr_state == states.DYING:
-		melee1_hitbox.disabled = false
-		melee2_hitbox.disabled = false
 		enemy_sprite.play("death")
 	if curr_state == states.EDIBLE:
 		enemy_sprite.play("edible")
@@ -151,10 +167,16 @@ func play_animations():
 	if curr_state != states.DYING and curr_state != states.EDIBLE:
 		if is_attacking1 and !is_attacking2 and !is_hit:
 			enemy_sprite.play("melee1")
-			melee1_hitbox.disabled = false
+			if enemy_sprite.get_frame() == 1:
+				melee1_hitbox.disabled = false
+			else:
+				melee1_hitbox.disabled = true
 		elif is_attacking2 and !is_hit:
 			enemy_sprite.play("melee2")
-			melee2_hitbox.disabled = false
+			if enemy_sprite.get_frame() == 1:
+				melee2_hitbox.disabled = false
+			else:
+				melee2_hitbox.disabled = true
 		elif is_hit:
 			enemy_sprite.play("hurt")
 		else:
@@ -176,3 +198,28 @@ func _on_animation_finished():
 	if is_hit:
 		is_hit = false
 		
+
+# check if player is within interaction range
+func _on_in_interact_range(in_range):
+	if in_range:
+		can_interact_with = true
+	else:
+		can_interact_with = false
+
+# start interaction with enemy TODO - limit interaction if dead
+func start_interaction():
+	if can_interact_with:
+		print("wow interaction wow")
+
+# save data related to enemy
+func save():
+	var save_dict = {
+		"filename" : get_scene_file_path(),
+		"parent" : get_parent().get_path(),
+		"pos_x" : global_position.x,
+		"pos_y" : global_position.y,
+		"current_health" : health,
+		"max_health" : max_health,
+		"curr_state" : curr_state
+	}
+	return save_dict

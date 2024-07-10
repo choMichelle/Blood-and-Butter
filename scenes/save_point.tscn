@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://ce7h7f6q7s2yt"]
+
+[ext_resource type="Texture2D" uid="uid://c3cjvvqp11oqh" path="res://assets/sprites/pickup_meat_2.png" id="1_o57ey"]
+[ext_resource type="Script" path="res://scripts/save_point.gd" id="1_vx5y5"]
+[ext_resource type="PackedScene" uid="uid://bhc4y5i0128ym" path="res://scenes/interactable.tscn" id="3_3hvio"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_47o7r"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_o57ey")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="save_point" type="Node2D" groups=["interactive"]]
+script = ExtResource("1_vx5y5")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -16)
+sprite_frames = SubResource("SpriteFrames_47o7r")
+
+[node name="interactable" parent="." instance=ExtResource("3_3hvio")]
+
+[node name="CollisionShape2D" parent="interactable" index="0"]
+position = Vector2(0, -19)
+
+[editable path="interactable"]

@@ -15,9 +15,17 @@ run/main_scene="res://scenes/game.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+DialogueManager="*res://addons/dialogue_manager/dialogue_manager.gd"
+
 [dotnet]
 
 project/assembly_name="Blood and Butter"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/dialogue_manager/plugin.cfg")
 
 [input]
 
@@ -66,6 +74,15 @@ yell={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":70,"key_label":0,"unicode":102,"echo":false,"script":null)
 ]
 }
+debug_load_game={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":49,"key_label":0,"unicode":49,"echo":false,"script":null)
+]
+}
+
+[internationalization]
+
+locale/translations_pot_files=PackedStringArray("res://dialogue/main.dialogue", "res://dialogue/test.dialogue")
 
 [layer_names]
 
@@ -75,6 +92,7 @@ yell={
 2d_physics/layer_1="tiles"
 2d_physics/layer_2="player"
 2d_physics/layer_3="enemies"
+2d_physics/layer_4="interactable"
 
 [rendering]
 

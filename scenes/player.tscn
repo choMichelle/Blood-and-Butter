@@ -528,7 +528,7 @@ height = 48.0
 radius = 8.0
 height = 48.0
 
-[node name="player" type="CharacterBody2D"]
+[node name="player" type="CharacterBody2D" groups=["persist", "player"]]
 z_index = 1
 collision_layer = 2
 script = ExtResource("1_4hvi2")
@@ -536,10 +536,10 @@ script = ExtResource("1_4hvi2")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -31)
 sprite_frames = SubResource("SpriteFrames_4u42a")
-animation = &"death"
+animation = &"eat"
 autoplay = "idle"
 
-[node name="hitboxes" type="Area2D" parent="AnimatedSprite2D"]
+[node name="hitboxes" type="Area2D" parent="AnimatedSprite2D" groups=["hitboxes"]]
 position = Vector2(38.75, 9)
 collision_layer = 2
 collision_mask = 4
@@ -559,7 +559,7 @@ position = Vector2(-15.9375, -38)
 shape = SubResource("RectangleShape2D_7yp4c")
 disabled = true
 
-[node name="eat_hitbox" type="Area2D" parent="AnimatedSprite2D"]
+[node name="eat_hitbox" type="Area2D" parent="AnimatedSprite2D" groups=["eat_hitbox"]]
 collision_layer = 2
 collision_mask = 4
 
@@ -590,6 +590,9 @@ shape = SubResource("CapsuleShape2D_yofo3")
 
 [node name="dash_timer" type="Timer" parent="."]
 wait_time = 0.32
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(2, 2)
 
 [connection signal="animation_finished" from="AnimatedSprite2D" to="." method="_on_animated_sprite_2d_animation_finished"]
 [connection signal="timeout" from="dash_timer" to="." method="_on_dash_timer_timeout"]

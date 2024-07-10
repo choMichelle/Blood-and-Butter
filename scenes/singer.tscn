@@ -1,7 +1,8 @@
-[gd_scene load_steps=49 format=3 uid="uid://c0xy1vbvjalxa"]
+[gd_scene load_steps=50 format=3 uid="uid://c0xy1vbvjalxa"]
 
 [ext_resource type="Script" path="res://scripts/enemy_singer.gd" id="1_lysqn"]
 [ext_resource type="Texture2D" uid="uid://cg0pjsnja0iuh" path="res://assets/sprites/singer spritesheet.png" id="2_37kds"]
+[ext_resource type="PackedScene" uid="uid://bhc4y5i0128ym" path="res://scenes/interactable.tscn" id="6_ftqs1"]
 [ext_resource type="PackedScene" uid="uid://3smqxuer3rn8" path="res://scenes/hurtbox.tscn" id="6_hg3ur"]
 [ext_resource type="PackedScene" uid="uid://dmpuu0hjtirl7" path="res://scenes/enemy_detection_range.tscn" id="7_m0if8"]
 [ext_resource type="PackedScene" uid="uid://k037nmsgkuyc" path="res://scenes/obstacle_detection.tscn" id="8_qlbwv"]
@@ -317,10 +318,6 @@ size = Vector2(31, 43)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yocms"]
 size = Vector2(27, 41)
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_6ua8c"]
-radius = 6.0
-height = 48.0
-
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_1b7ik"]
 radius = 6.0
 height = 48.0
@@ -331,20 +328,24 @@ size = Vector2(49, 13)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ynaak"]
 size = Vector2(131, 64)
 
-[node name="singer" type="CharacterBody2D"]
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_6ua8c"]
+radius = 6.0
+height = 48.0
+
+[node name="singer" type="CharacterBody2D" groups=["interactive", "persist"]]
 collision_layer = 4
 script = ExtResource("1_lysqn")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -28)
 sprite_frames = SubResource("SpriteFrames_rsj3l")
-animation = &"edible"
+animation = &"idle"
 autoplay = "idle"
 
 [node name="obstacle_detection" parent="AnimatedSprite2D" instance=ExtResource("8_qlbwv")]
 position = Vector2(0, 20)
 
-[node name="hitboxes" type="Area2D" parent="AnimatedSprite2D"]
+[node name="hitboxes" type="Area2D" parent="AnimatedSprite2D" groups=["hitboxes"]]
 
 [node name="hitbox_collider1" type="CollisionShape2D" parent="AnimatedSprite2D/hitboxes"]
 position = Vector2(-49.5, -6.5)
@@ -355,10 +356,6 @@ disabled = true
 position = Vector2(-47.5, -20.5)
 shape = SubResource("RectangleShape2D_yocms")
 disabled = true
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -24)
-shape = SubResource("CapsuleShape2D_6ua8c")
 
 [node name="enemy_hurtbox" parent="." instance=ExtResource("6_hg3ur")]
 collision_layer = 4
@@ -381,6 +378,18 @@ collision_layer = 4
 position = Vector2(0, -33)
 shape = SubResource("RectangleShape2D_ynaak")
 
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+position = Vector2(0, -24)
+shape = SubResource("CapsuleShape2D_6ua8c")
+
+[node name="interactable" parent="." instance=ExtResource("6_ftqs1")]
+position = Vector2(0, -24)
+
+[node name="CollisionShape2D" parent="interactable" index="0"]
+position = Vector2(0, -8)
+
 [connection signal="damage_taken" from="enemy_hurtbox" to="." method="_on_enemy_hurtbox_damage_taken"]
 
 [editable path="enemy_hurtbox"]
+[editable path="interactable"]

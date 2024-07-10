@@ -28,7 +28,6 @@ var is_eating: bool = false
 var is_hit: bool = false
 
 # get player nodes
-@onready var player_node = $"."
 @onready var animated_sprite = $AnimatedSprite2D
 @onready var hurtbox = $hurtbox
 
@@ -43,16 +42,23 @@ var is_hit: bool = false
 
 @onready var eat_hitbox = $AnimatedSprite2D/eat_hitbox/eat_collider
 
+# custom signals
+signal interact_pressed
+
 func _ready():
 	hurtbox.damage_taken.connect(_on_damage_taken)
 
 func _physics_process(delta):
-	#print(str(health) + "/" + str(max_health))
+	#print(str(health) + "/" + str(max_health)) #TODO - delete
 	# Add the gravity.
 	if not is_on_floor():
 		velocity.y += gravity * delta
 	
 	if can_move:
+		# handle interaction
+		if Input.is_action_just_pressed("interact") and !is_dashing and is_on_floor():
+			interact_pressed.emit()
+		
 		# handle attacking
 		if Input.is_action_just_pressed("melee_attack") and !is_dashing:
 			if velocity.y < 0 and !queued_attack:
@@ -117,7 +123,7 @@ func _physics_process(delta):
 # handle taking damage
 func _on_damage_taken(knockback_direction):
 	if health > 0:
-		health -= 1
+		#health -= 1
 		velocity.x = knockback_direction * KNOCKBACK_POWER
 		is_hit = true
 		can_move = false
@@ -143,13 +149,22 @@ func play_animations():
 	if !is_dashing and !is_hit:
 		if is_attacking1:
 			animated_sprite.play("melee1")
-			melee1_hitbox.disabled = false
+			if animated_sprite.get_frame() == 1:
+				melee1_hitbox.disabled = false
+			else:
+				melee1_hitbox.disabled = true
 		elif is_attacking2:
 			animated_sprite.play("melee2")
-			melee2_hitbox.disabled = false
+			if animated_sprite.get_frame() == 1:
+				melee2_hitbox.disabled = false
+			else:
+				melee2_hitbox.disabled = true
 		elif is_attacking_up:
 			animated_sprite.play("melee3")
-			melee_up_hitbox.disabled = false
+			if animated_sprite.get_frame() == 1:
+				melee_up_hitbox.disabled = false
+			else:
+				melee_up_hitbox.disabled = true
 		elif is_eating:
 			animated_sprite.play("eat")
 			if animated_sprite.get_frame() == 4:
@@ -169,21 +184,18 @@ func play_animations():
 func _on_animated_sprite_2d_animation_finished():
 	if is_attacking1:
 		is_attacking1 = false
-		melee1_hitbox.disabled = true
 		if queued_attack:
 			is_attacking2 = true
 			queued_attack = false
 		
 	elif is_attacking2:
 		is_attacking2 = false
-		melee2_hitbox.disabled = true
 		if queued_attack:
 			is_attacking1 = true
 			queued_attack = false
 		
 	elif is_attacking_up:
 		is_attacking_up = false
-		melee_up_hitbox.disabled = true
 		if queued_attack:
 			is_attacking1 = true
 			queued_attack = false
@@ -199,3 +211,16 @@ func _on_animated_sprite_2d_animation_finished():
 func _on_dash_timer_timeout():
 	is_dashing = false
 	dash_particles.emitting = false
+
+func save():
+	var save_dict = {
+		"filename" : get_scene_file_path(),
+		"parent" : get_parent().get_path(),
+		"pos_x" : position.x, # Vector2 is not supported by JSON
+		"pos_y" : position.y,
+		"current_health" : health,
+		"max_health" : max_health
+	}
+	return save_dict
+
+

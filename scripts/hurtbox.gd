@@ -10,14 +10,13 @@ signal damage_taken(knockback_direction)
 signal bite_taken
 
 func _on_area_entered(area):
-	if area.name == "hitboxes" and !is_invincible:
+	if area.is_in_group("hitboxes") and !is_invincible:
 		timer.start(1.05)
 		is_invincible = true
 		
 		# find direction the hit came from
 		var knock_direction = 0
 		var hit_direction = hurtbox.global_position.x - area.global_position.x
-		print(str(hurtbox.global_position.x) + "," + str(area.global_position.x) )
 		if hit_direction > 0:
 			knock_direction = 1
 		if hit_direction < 0:
@@ -25,7 +24,7 @@ func _on_area_entered(area):
 		
 		damage_taken.emit(knock_direction)
 		
-	if area.name == "eat_hitbox":
+	if area.is_in_group("eat_hitbox"):
 		bite_taken.emit()
 
 func _on_timer_timeout():
