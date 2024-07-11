@@ -5,6 +5,7 @@ var can_interact_with: bool = false
 
 func _ready():
 	interactable.in_interact_range.connect(_on_in_interact_range)
+	Events.interact_pressed.connect(start_interaction)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

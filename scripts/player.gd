@@ -57,7 +57,7 @@ func _physics_process(delta):
 	if can_move:
 		# handle interaction
 		if Input.is_action_just_pressed("interact") and !is_dashing and is_on_floor():
-			interact_pressed.emit()
+			Events.interact_pressed.emit()
 		
 		# handle attacking
 		if Input.is_action_just_pressed("melee_attack") and !is_dashing:

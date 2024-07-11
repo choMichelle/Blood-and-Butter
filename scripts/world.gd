@@ -1,31 +1,10 @@
 extends Node2D
 
-@onready var player = %player
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	player.interact_pressed.connect(_on_interact_pressed)
-
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if Input.is_action_just_pressed("debug_load_game"):
 		load_game()
-
-# handle 'e' interactions
-func _on_interact_pressed():
-	var interactive_nodes = get_tree().get_nodes_in_group("interactive")
-	for node in interactive_nodes:
-		if node.scene_file_path.is_empty():
-			print("interactive node '%s' is not an instanced scene, skipped" % node.name)
-			continue
-		
-		# Check the node has a interaction function.
-		if !node.has_method("start_interaction"):
-			print("interactive node '%s' is missing a start_interaction() function, skipped" % node.name)
-			continue
-		
-		node.call("start_interaction")
 
 # load game data TODO - move to proper menu button
 func load_game():
@@ -60,7 +39,7 @@ func load_game():
 
 		# Firstly, we need to create the object and add it to the tree and set its position.
 		var new_object = load(node_data["filename"]).instantiate()
-		get_node(node_data["parent"]).call_deferred("add_child", new_object)
+		get_node(node_data["parent"]).add_child(new_object, true)
 		new_object.position = Vector2(node_data["pos_x"], node_data["pos_y"])
 
 		# Now we set the remaining variables.
@@ -68,3 +47,4 @@ func load_game():
 			if i == "filename" or i == "parent" or i == "pos_x" or i == "pos_y":
 				continue
 			new_object.set(i, node_data[i])
+

@@ -57,6 +57,7 @@ func _ready():
 	hurtbox.bite_taken.connect(_on_bite_taken)
 	obs_detector.obstacle_detected.connect(_on_obstacle_detected)
 	interactable.in_interact_range.connect(_on_in_interact_range)
+	Events.interact_pressed.connect(start_interaction)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -142,6 +143,7 @@ func find_player_direction():
 			print("player node '%s' is not an instanced scene, skipped" % node.name)
 			continue
 		target = node
+	
 	target_pos = target.position
 	target_dir = position.x - target_pos.x
 	if target_dir > 0:
