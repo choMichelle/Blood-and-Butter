@@ -57,7 +57,6 @@ func _ready():
 	hurtbox.bite_taken.connect(_on_bite_taken)
 	obs_detector.obstacle_detected.connect(_on_obstacle_detected)
 	interactable.in_interact_range.connect(_on_in_interact_range)
-	Events.interact_pressed.connect(start_interaction)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -71,17 +70,32 @@ func _physics_process(delta):
 	if not is_on_floor():
 		velocity.y += gravity * delta
 	
-	# enemy action state control
+	handle_state_changes()
+	
+	play_animations()
+	
+	# flip sprite
+	if !is_hit:
+		if velocity.x > 0:
+			enemy_sprite.scale.x = -1
+		if velocity.x < 0:
+			enemy_sprite.scale.x = 1
+	
+	move_and_slide()
+
+# handles behaviour for each state
+func handle_state_changes():
 	match curr_state:
 		states.NEUTRAL:
 			velocity.x = 0
 		states.CHASE:
-			find_player_direction()
 			obs_detector.ray.enabled = true
+			
+			find_player_direction()
 			if !is_hit:
 				follow_player()
 			
-			# stop chasing
+			# out of range, stop chasing
 			if detection_range.is_chasing == false:
 				obs_detector.ray.enabled = false
 				curr_state = states.NEUTRAL
@@ -95,17 +109,6 @@ func _physics_process(delta):
 		states.EDIBLE:
 			velocity.x = 0
 			edible_hurtbox_collider.disabled = false
-	
-	play_animations()
-	
-	# flip sprite
-	if !is_hit:
-		if velocity.x > 0:
-			enemy_sprite.scale.x = -1
-		if velocity.x < 0:
-			enemy_sprite.scale.x = 1
-	
-	move_and_slide()
 
 # handle hurtbox being hit
 # hit by attacks
@@ -157,7 +160,9 @@ func follow_player():
 		velocity.x = direction * SPEED
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
+	
 	if position.distance_to(target_pos) < melee_range:
+		curr_state = states.ATTACK
 		is_attacking1 = true
 
 func play_animations():
@@ -207,11 +212,6 @@ func _on_in_interact_range(in_range):
 		can_interact_with = true
 	else:
 		can_interact_with = false
-
-# start interaction with enemy TODO - limit interaction if dead
-func start_interaction():
-	if can_interact_with:
-		print("wow interaction wow")
 
 # save data related to enemy
 func save():

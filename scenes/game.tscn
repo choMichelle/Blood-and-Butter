@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://d0qwtobku50w0"]
+[gd_scene load_steps=9 format=3 uid="uid://d0qwtobku50w0"]
 
 [ext_resource type="Script" path="res://scripts/world.gd" id="1_7hy8k"]
 [ext_resource type="PackedScene" uid="uid://dvuubm3gsg4f2" path="res://scenes/player.tscn" id="1_mchla"]
 [ext_resource type="Texture2D" uid="uid://chv8pbos6hrwk" path="res://assets/sprites/3x3_test_tileset.png" id="2_n80tm"]
 [ext_resource type="PackedScene" uid="uid://c0xy1vbvjalxa" path="res://scenes/singer.tscn" id="3_dobx2"]
+[ext_resource type="PackedScene" uid="uid://cp01cv7d5ycnl" path="res://scenes/dog.tscn" id="5_b3ax2"]
 [ext_resource type="PackedScene" uid="uid://ce7h7f6q7s2yt" path="res://scenes/save_point.tscn" id="5_cpudr"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_yesjl"]
@@ -65,8 +66,8 @@ position = Vector2(0, 15)
 [node name="singer" parent="enemies" instance=ExtResource("3_dobx2")]
 position = Vector2(266, 14)
 
-[node name="singer2" parent="enemies" instance=ExtResource("3_dobx2")]
-position = Vector2(528, 13)
+[node name="dog" parent="enemies" instance=ExtResource("5_b3ax2")]
+position = Vector2(567, 16)
 
 [node name="save_point" parent="." instance=ExtResource("5_cpudr")]
 position = Vector2(-292, -48)

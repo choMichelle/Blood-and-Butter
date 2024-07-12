@@ -47,6 +47,8 @@ signal interact_pressed
 
 func _ready():
 	hurtbox.damage_taken.connect(_on_damage_taken)
+	Events.dialogue_started.connect(_on_dialogue_started)
+	Events.dialogue_ended.connect(_on_dialogue_finished)
 
 func _physics_process(delta):
 	#print(str(health) + "/" + str(max_health)) #TODO - delete
@@ -212,11 +214,18 @@ func _on_dash_timer_timeout():
 	is_dashing = false
 	dash_particles.emitting = false
 
+func _on_dialogue_started():
+	velocity.x = 0 #TODO - not working??
+	can_move = false
+
+func _on_dialogue_finished():
+	can_move = true
+
 func save():
 	var save_dict = {
 		"filename" : get_scene_file_path(),
 		"parent" : get_parent().get_path(),
-		"pos_x" : position.x, # Vector2 is not supported by JSON
+		"pos_x" : position.x, 
 		"pos_y" : position.y,
 		"current_health" : health,
 		"max_health" : max_health
