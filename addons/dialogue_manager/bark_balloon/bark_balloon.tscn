@@ -1,0 +1,48 @@
+[gd_scene load_steps=5 format=3 uid="uid://jknuexgmy04j"]
+
+[ext_resource type="Script" path="res://addons/dialogue_manager/bark_balloon/bark_balloon.gd" id="1_0pk8s"]
+[ext_resource type="Texture2D" uid="uid://cdq4jf5k3i6ff" path="res://assets/sprites/bark1.svg" id="1_v3pu2"]
+[ext_resource type="Texture2D" uid="uid://ch3h7pemp0y04" path="res://assets/sprites/bark_point.svg" id="2_7oi8h"]
+[ext_resource type="Script" path="res://addons/dialogue_manager/dialogue_label.gd" id="3_320kn"]
+
+[node name="BarkBalloon" type="Node2D"]
+script = ExtResource("1_0pk8s")
+
+[node name="BarkBalloon" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = -5.0
+offset_top = -116.0
+offset_right = 176.0
+offset_bottom = 1.0
+
+[node name="TextureRect" type="TextureRect" parent="BarkBalloon"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("1_v3pu2")
+
+[node name="TextureRect2" type="TextureRect" parent="BarkBalloon"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 76.0
+offset_right = 45.0
+offset_bottom = 116.0
+texture = ExtResource("2_7oi8h")
+
+[node name="DialogueLabel" type="RichTextLabel" parent="BarkBalloon"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.459
+anchor_top = 0.44
+anchor_right = 0.459
+anchor_bottom = 0.44
+offset_left = -39.079
+offset_top = -21.48
+offset_right = 38.921
+offset_bottom = 21.52
+grow_horizontal = 2
+grow_vertical = 2
+text = "Bark!"
+script = ExtResource("3_320kn")
+skip_pause_at_abbreviations = PackedStringArray("Mr", "Mrs", "Ms", "Dr", "etc", "eg", "ex")
